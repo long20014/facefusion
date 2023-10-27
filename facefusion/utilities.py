@@ -1,3 +1,4 @@
+import time
 from typing import List, Optional
 from functools import lru_cache
 from pathlib import Path
@@ -237,3 +238,11 @@ def get_device(execution_providers : List[str]) -> str:
 	if 'CoreMLExecutionProvider' in execution_providers:
 		return 'mps'
 	return 'cpu'
+
+
+def get_output_path_new(output_path: Optional[str], target_path : Optional[str]) -> str:
+	if is_file(target_path) and is_directory(output_path):
+		current_time_stamp = str(int(time.time() * 1000))
+		target_name, target_extension = os.path.splitext(os.path.basename(target_path))
+		return os.path.join(output_path, 'output' + '_' + current_time_stamp + target_extension)
+	return output_path

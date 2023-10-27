@@ -24,7 +24,8 @@ def render() -> None:
 
 	OUTPUT_PATH_TEXTBOX = gradio.Textbox(
 		label = wording.get('output_path_textbox_label'),
-		value = facefusion.globals.output_path or tempfile.gettempdir(),
+		# value = facefusion.globals.output_path or tempfile.gettempdir(),
+		value = 'f:\\github-codes\\roop\\assets\\face-fusion-output',
 		max_lines = 1
 	)
 	OUTPUT_IMAGE_QUALITY_SLIDER = gradio.Slider(

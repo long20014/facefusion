@@ -5,7 +5,7 @@ import facefusion.globals
 from facefusion import wording
 from facefusion.core import limit_resources, conditional_process
 from facefusion.uis.core import get_ui_component
-from facefusion.utilities import is_image, is_video, normalize_output_path, clear_temp
+from facefusion.utilities import is_image, is_video, normalize_output_path, clear_temp, get_output_path_new
 
 OUTPUT_IMAGE : Optional[gradio.Image] = None
 OUTPUT_VIDEO : Optional[gradio.Video] = None
@@ -45,7 +45,8 @@ def listen() -> None:
 
 
 def start(output_path : str) -> Tuple[gradio.Image, gradio.Video]:
-	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path, facefusion.globals.target_path, output_path)
+	facefusion.globals.output_path = get_output_path_new(output_path, facefusion.globals.target_path)
+	# facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path, facefusion.globals.target_path, output_path)
 	limit_resources()
 	conditional_process()
 	if is_image(facefusion.globals.output_path):

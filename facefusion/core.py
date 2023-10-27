@@ -1,23 +1,22 @@
+from facefusion.utilities import is_image, is_video, detect_fps, compress_image, merge_video, extract_frames, get_temp_frame_paths, restore_audio, create_temp, move_temp, clear_temp, list_module_names, encode_execution_providers, decode_execution_providers, normalize_output_path, get_output_path_new
+from facefusion.processors.frame.core import get_frame_processors_modules, load_frame_processor_module
+from facefusion.predictor import predict_image, predict_video
+from facefusion import metadata, wording
+import facefusion.globals
+import facefusion.choices
+from argparse import ArgumentParser, HelpFormatter
+import tensorflow
+import onnxruntime
+import shutil
+import platform
+import warnings
+import sys
+import signal
 import os
 
 os.environ['OMP_NUM_THREADS'] = '1'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-import signal
-import sys
-import warnings
-import platform
-import shutil
-import onnxruntime
-import tensorflow
-from argparse import ArgumentParser, HelpFormatter
-
-import facefusion.choices
-import facefusion.globals
-from facefusion import metadata, wording
-from facefusion.predictor import predict_image, predict_video
-from facefusion.processors.frame.core import get_frame_processors_modules, load_frame_processor_module
-from facefusion.utilities import is_image, is_video, detect_fps, compress_image, merge_video, extract_frames, get_temp_frame_paths, restore_audio, create_temp, move_temp, clear_temp, list_module_names, encode_execution_providers, decode_execution_providers, normalize_output_path
 
 warnings.filterwarnings('ignore', category = FutureWarning, module = 'insightface')
 warnings.filterwarnings('ignore', category = UserWarning, module = 'torchvision')
@@ -83,7 +82,8 @@ def apply_args(program : ArgumentParser) -> None:
 	# general
 	facefusion.globals.source_path = args.source_path
 	facefusion.globals.target_path = args.target_path
-	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path, facefusion.globals.target_path, args.output_path)
+	# facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path, facefusion.globals.target_path, args.output_path)
+	facefusion.globals.output_path = get_output_path_new(args.output_path, facefusion.globals.target_path)
 	# misc
 	facefusion.globals.skip_download = args.skip_download
 	facefusion.globals.headless = args.headless
@@ -190,8 +190,8 @@ def conditional_process() -> None:
 
 
 def process_image() -> None:
-	if predict_image(facefusion.globals.target_path):
-		return
+	# if predict_image(facefusion.globals.target_path):
+	# 	return
 	shutil.copy2(facefusion.globals.target_path, facefusion.globals.output_path)
 	# process frame
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
@@ -210,8 +210,8 @@ def process_image() -> None:
 
 
 def process_video() -> None:
-	if predict_video(facefusion.globals.target_path):
-		return
+	# if predict_video(facefusion.globals.target_path):
+	# 	return
 	fps = detect_fps(facefusion.globals.target_path) if facefusion.globals.keep_fps else 25.0
 	# create temp
 	update_status(wording.get('creating_temp'))
